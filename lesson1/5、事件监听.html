@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <!--初始值的count是0，click点击的时候count = count + 1，count发生变化后，后面立即会变-->
+        <!--数据驱动视图展示-->
+        <button v-on:click="count+=1">当前的count为：{{ count }}</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var app  = new Vue({
+            el:'#app',
+            data : {
+                count : 0,
+            }
+        })
+    </script>
+</body>
+</html>

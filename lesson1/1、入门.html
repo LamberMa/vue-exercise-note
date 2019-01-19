@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="app">
+        <!--插值语法，这里可以是变量，如果是数值的话会直接被显示出来，或者可以插入1+1这种运算-->
+        <!--{{ 1>2?"真的":"假的" }}，插入这种三目运算符也是没问题的。-->
+        <h3>{{ title }}</h3>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        // 1、创建vue的实例对象，这个options必须是一个对象
+        var app = new Vue({
+            // element，当前这个实例化对象你要绑定哪个元素
+            // 这些变量在vue对象内部会被加上一个$符号，因此调用的时候也需要加上$符号
+            // 比如：app.$el  app.$data.msg
+            el: '#app',
+            // 所有的数据都放在数据属性里面，名字必须是data
+            // 这个data里面的title是直接暴露的，因此可以直接使用app.title就可以拿到值。
+            // 不建议使用这种方法直接操作DOM，因为这样失去了vue本来的意义。
+            data: {
+                title: '土豆'
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        img{
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <img :src="currentSrc" @mouseenter='closeTimer' @mouseleave='opentimer'>
+        <ul>
+            <!--v-for的优先级总是大于事件的-->
+            <li v-for = "(item,index) in imgArr" @click='currentHandler(item)'>{{ index+1 }}</li>
+        </ul>
+        <button @click='prevImg'>上一张</button>
+        <button @click='nextImg'>下一张</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                imgArr: [
+                    { id: 1, src: './image/centos.png'},
+                    { id: 2, src: './image/docker.png' },
+                    { id: 3, src: './image/gitlab.jpg' },
+                    { id: 4, src: './image/jenkins.jpg' },
+                    { id: 5, src: './image/k8s.jpg' },
+                ],
+                currentSrc: './image/centos.png',
+                currentIndex: 0,
+                timer: null,
+            },
+            created(){
+                // 在Dom元素创建完成之前就进行的操作（通过虚拟DOM实现）
+                // 每2s切换一次
+                this.timer = setInterval(this.nextImg,1000)
+            },
+            methods:{
+                currentHandler(item){
+                    this.currentSrc = item.src
+                },
+                nextImg(){
+                    // 索引是从0开始的，因此长度要-1
+                    // 循环完成一遍以后要返回来是，因为自加一是要做的，因此返回到开始要从-1开始
+                    if (this.currentIndex == this.imgArr.length - 1 ){
+                        this.currentIndex = -1;
+                    };
+                    console.log(this.currentIndex);
+                    this.currentIndex++;
+                    this.currentSrc = this.imgArr[this.currentIndex].src
+                },
+                prevImg(){
+                    // 如果本来就是第一个，那么上一张就从最后一张开始往前倒
+                    if (this.currentIndex == 0){
+                        this.currentIndex = this.imgArr.length - 1;
+                    };
+                    this.currentIndex--;
+                    console.log(this.currentIndex);
+                    this.currentSrc = this.imgArr[this.currentIndex].src;
+                },
+                closeTimer(){
+                    clearInterval(this.timer)
+                },
+                opentimer(){
+                    this.timer = setInterval(this.nextImg, 1000);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
