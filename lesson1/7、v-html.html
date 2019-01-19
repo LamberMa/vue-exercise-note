@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <!--这样是不能直接用的，会被直接输出<p>测试字符串</p>，对应的html语义不会被解析-->
+        <div>{{test_str}}</div>
+        <!--需要使用v-html，v-html可以解析我们的标签-->
+        <div v-html='test_str'></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                'test_str': '<p>测试字符串</p>',
+            }
+        })
+    </script>
+</body>
+</html>

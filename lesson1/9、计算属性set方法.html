@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="computed">
+        <p>{{ reverseStr }}</p>
+
+        <button @click='clickHandler'>修改</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var com = new Vue({
+            el: '#computed',
+            data: {
+                msg: 'Hello World',
+            },
+            methods: {
+                clickHandler() {
+                    // 赋值的时候调用的就是set方法
+                    this.msg = "Hello maxiaoyu"
+                }
+            },
+            computed: {
+                // 设置计算属性的set方法
+                reverseStr: {
+                    set: function(newValue){
+                        this.msg = newValue;
+                    },
+                    get: function(){
+                        return this.msg.split("").reverse().join("");
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
