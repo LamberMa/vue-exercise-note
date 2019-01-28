@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <input type="button" value="开始" @click="start">
+        <input type="button" value="停止" @click="stop">
+
+        <p>{{msg}}</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                msg: "我是一个测试字符串",
+                intervalid: null,
+            },
+            methods:{
+                start(){
+                    // this就是指的当前的这个VM实例对象。
+                    // 这里避免多次创建定时器，可以先判断一下intervalid是不是null
+                    // 当只有一行的时候，是可以直接省略花括号的。
+                    if (this.intervalid != null) return;
+                    this.intervalid = setInterval( () => {
+                        // 在箭头函数中，this对象就是指代的定义时所在的对象，即vue实例对象。
+                        // 解决了this的指向问题，让内部this就是外部的this。
+                        // 1、拿到msg，从当前这实例对象，也就是this中去取。
+                        // 2、字符串使用substring进行截取
+                        var start = this.msg.substring(0, 1);
+                        var end = this.msg.substring(1);
+                        // vm实例自身会监听自己的data的改变，如果data发生了改变，就会自动应用到View中
+                        // 因此编码过程中只需要关注数据，而不需要关注重新渲染到页面。
+                        this.msg = end + start;
+                    }, 400);
+                },
+                stop(){
+                    // 将intervalid保存到data属性里就可以了，这样就可以通过this直接取到了。
+                    clearInterval(this.intervalid);
+                    // 每当清除定时器以后要重新将定时器的id置位为null。
+                    this.intervalid = null;
+                }
+            },
+            computed:{
+
+            }
+        })
+    </script>
+</body>
+</html>

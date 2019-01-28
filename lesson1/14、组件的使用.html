@@ -7,9 +7,28 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="app">
+        <Vheader></Vheader>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
     <script>
-        
+        // 组件的创建，组件是可以进行复用的，也就是可以使用多次。
+        // 传递两个参数，第一个参数是组件的名字，可以用来直接调用。
+        // 组件的名字，第一个字母大写，用来和基本的标签区分，反正起一个自己能看懂的，和html标签区分开就行
+        Vue.component("Vheader", {
+            // 这里的data不是一个对象，一定要是一个函数，而且必须return一个对象，即使空对象也可以。
+            // 一旦你把return省略掉了，就会各种报错。
+            data: function(){
+                return {}
+            },
+            template: '<div class="header"><div class="w"><div class="w-1"><img src="./image/centos.png" /></div><div class="w-r"><button>登录</button><button>注册</button></div></div></div>'
+        })
+        var app = new Vue({
+            el: '#app',
+            data: {
+
+            }
+        })
     </script>
 </body>
 </html>

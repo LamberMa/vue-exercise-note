@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .inner{
+            height: 150px;
+            background-color: darkcyan;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        事件修饰符：
+        1、.stop阻止冒泡
+        2、.prevent阻止默认事件
+        3、.capture添加事件侦听器时使用捕获模式
+        4、.self只当事件在该元素本身（比如不是子元素）触发时触发回调
+        5、.once事件只触发一次
+
+        .stop阻止了冒泡。.self也相当于阻止了冒泡但是不同点是，self只针对当前这个元素，而stop是阻止了所有的冒泡行为
+    -->
+    <div id="app">
+        <div class='inner' @click="divhandler">
+            <!--因为冒泡机制，当点选了内部的btn的按钮以后，会先触发btn的click事件，然后事件向外冒泡
+                触发包括btn的div的click事件，因此你会看到btn的事先被触发，随后div的click事件被触发。
+            -->
+            <input type="button" value="点我" @click="btnHandler">
+            <!--当使用了事件修饰符以后，就会阻止冒泡的行为出现，只会调用内部btn的click事件。-->
+            <input type="button" value="点我 with .stop" @click.stop="btnHandler">
+        </div>
+        <br>
+        <!--当使用捕获机制的时候，点击内部的btn不会先调用btn的click事件，而是先调用div的click事件再调用内部btn的click事件-->
+        <div class='inner' @click.capture="divhandler">
+            <input type="button" value="点我" @click="btnHandler">
+        </div>
+        <br>
+        <!--self表示只有你点击我自己这个div的时候才会触发事件，冒泡或捕获不会使我被动触发-->
+        <div class='inner' @click.self="divhandler">
+            <input type="button" value="点我" @click="btnHandler">
+        </div>
+        <div>
+            <!--阻止a跳转的默认行为，同理，form表单的submit也可以被阻止-->
+            <a href="http://www.baidu.com" @click.prevent="linkclick">去百度</a>
+        </div>
+        <div>
+            <!--事件修饰符是可以串联的，而且这俩谁先谁后并没有什么影响，这里默认阻止事件只会执行一次
+                当第二次点击的时候不再进行阻止，可以正常的进行跳转。
+            -->
+            <a href="http://www.baidu.com" @click.prevent.once="linkclick">去百度2</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods:{
+                divhandler(){
+                    console.log('触发了inner的点击事件');
+                },
+                btnHandler(){
+                    console.log('触发了btn的点击事件');
+                },
+                linkclick(){
+                    console.log('跳转百度');
+                }
+            }
+        })
+    </script>
+</body>
+</html>

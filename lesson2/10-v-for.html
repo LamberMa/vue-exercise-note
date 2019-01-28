@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+    <style>
+        ul{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <div id='app'>
+        <!--单纯的循环一个列表-->
+        <ul v-for="(item,index) in list">
+            <li>索引为：{{index}}；值为：{{item}}</li>
+        </ul>
+        <!--循环一个列表列表中是对象-->
+        <ul v-for="(item,index) in user_dict">
+            <li>{{item.name}}</li>
+        </ul>
+        <!--循环一个对象：注意这个value在前面，key在后面，而且还有一个第三个值，就是索引
+            当然这个index可以不取，但是这个索引基本不会怎么用。
+        -->
+        <ul v-for="(value, key, index) in user_dict2">
+            <li>{{key}}-----{{value}}</li>
+        </ul>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                list: [1,2,3,4,5,6],
+                user_dict:[
+                    { id: 1, 'name': 'maxiaoyu', age: 12},
+                    { id: 1, 'name': 'lamber', age: 12 },
+                    { id: 1, 'name': 'qimaosen', age: 12 },
+                    { id: 1, 'name': 'shiyue', age: 12 },
+                ],
+                user_dict2: {
+                    'user1': { id: 1, 'name': 'maxiaoyu', age: 12 },
+                    'user2': { id: 1, 'name': 'lamber', age: 12 },
+                    'user3': { id: 1, 'name': 'qimaosen', age: 12 },
+                    'user4': { id: 1, 'name': 'shiyue', age: 12 },
+                }
+            },
+            methods: {},
+            created: {},
+            computed: {},
+        })
+    </script>
+</body>
+</html>
