@@ -13,11 +13,14 @@
 </head>
 <body>
     <div id='app'>
+
         <!--单纯的循环一个列表-->
         <ul v-for="(item,index) in list">
             <li>索引为：{{index}}；值为：{{item}}</li>
         </ul>
-        <!--循环一个列表列表中是对象-->
+        <!--循环一个列表列表中是对象， 2.2.0+的版本里，当在组件中使用v-for的时候，key是必须的
+            
+        -->
         <ul v-for="(item,index) in user_dict">
             <li>{{item.name}}</li>
         </ul>
@@ -26,6 +29,10 @@
         -->
         <ul v-for="(value, key, index) in user_dict2">
             <li>{{key}}-----{{value}}</li>
+        </ul>
+        <!--循环从1开始，进行数字的循环（迭代）-->
+        <ul v-for="count in 10">
+            <li>这是第{{count}}次循环</li>
         </ul>
     </div>
     <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>

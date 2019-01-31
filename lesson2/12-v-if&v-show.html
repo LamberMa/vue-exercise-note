@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app'>
+        <!--
+            v-if和v-show唯一的区别就是，v-if是真正的元素的销毁和重建
+            而v-show是单纯的display:none这种样式的变化，对应的v-if有较高的切换性能消耗
+            而v-show有较高的初始渲染消耗
+            如果元素涉及到频繁的切换，最好不要使用v-if
+            
+        -->
+        <input type="button" value="切换" @click="toggle">
+        <h3 v-if="flag">这是用v-if控制的元素</h3>
+        <h3 v-show="flag">这是用v-show控制的元素</h3>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                flag: true,
+            },
+            methods: {
+                toggle(){
+                    console.log(this.flag);
+                    this.flag = !this.flag;
+                }
+            },
+        })
+    </script>
+</body>
+</html>

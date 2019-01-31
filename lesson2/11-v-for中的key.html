@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app'>
+        <!--
+            遍历的每一个item都带着一个checkbox，比如我直接勾了item的id为3，name为qimaosen的选项
+            当点击添加按钮，调用unshift方法向列表头部添加数据的时候我们会发现，数据没问题，但是checkbox的钩子飘了
+            飘到了item id为2的lamber上，因为这个钩子始终是勾选的第三个，你在上面添加了数据以后它仍然勾选的是第三个。
+            这个时候数据勾选就会存在问题。
+        -->
+        id: <input type="text" v-model="id">
+        Name：<input type="text" v-model="name">
+        <input type="button" value="添加" @click="add">
+        <!--为了解决上面的这个问题，我们可以在循环的时候添加一个key，作为唯一标识。
+            这个key作为属性，通过v-bind绑定，key的属性只能number或者string，而不是item整个对象。
+            因此，在组件中使用v-for循环的时候，或者一些特殊情况中，如果v-for有问题，必须在使用v-for的
+            同时，指定唯一的字符串或者数字类型的:key值。写不会有什么问题，不写可能会有问题，所以一般还是写上
+        -->
+        <p v-for="item in user_dict" :key="item.id">
+            <input type="checkbox" />
+            {{item.id}}----{{item.name}}
+        </p>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                id: null,
+                name: null,
+                user_dict: [
+                    { id: 1, 'name': 'maxiaoyu', age: 12 },
+                    { id: 2, 'name': 'lamber', age: 12 },
+                    { id: 3, 'name': 'qimaosen', age: 12 },
+                    { id: 4, 'name': 'shiyue', age: 12 },
+                ],
+            },
+            methods: {
+                add(){
+                    this.user_dict.unshift({
+                        id: this.id,
+                        name: this.name
+                    })
+                }
+            },
+        })
+    </script>
+</body>
+</html>

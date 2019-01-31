@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <link rel="stylesheet" href="../medias/css/bootstrap.css">
+    <title>Document</title>
+</head>
+<body>
+    <!--
+        Vue.js允许你自定义过滤器，可以被用作一些常见的文本格式化，过滤器可以用在两个地方，mustache，插值和v-bind表达式。
+        过滤器应该被添加在JavaScript表达式的尾部由管道符表示，“|”，过滤器的使用格式： {{ name | 过滤器名称 }}
+    -->
+    <div id='app'>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label for="">
+                    ID: <input type="text" class='form-control' v-model="id">
+                </label>
+                <label for="">
+                    NAME: <input type="text" class='form-control' v-model='name'>
+                </label>
+                <!--在vue中使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了-->
+                <input type="button" class="btn btn-success" value='添加' @click="additem">
+                <label for="">搜索名称关键字
+                    <input type="text" class='form-control' v-model='kw'>
+                </label>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>CTIME</th>
+                    <th>OPT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in search(kw)" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.ctime}}</td>
+                    <!--为了避免刷新，要组织a标签的默认行为-->
+                    <td><a href="" @click.prevent='delitem(item.id)'>删除</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                id: null,
+                name: null,
+                kw: '',
+                list:[
+                    { id: 1, name: '奔驰', ctime: new Date()},
+                    { id: 2, name: '宝马', ctime: new Date() },
+                ]
+            },
+            methods: {
+                additem(){
+                    // 1.获取到id和name
+                    // 2.组织出一个对象
+                    // 3.把这个对象调用数组的相关方法，添加到data上的list中去
+                    // 4.在vue中已经实现了数据的双向绑定，每当我们改了data的数据，vue会默认监听到数据的改动，然后自动把新的数据应用到页面上
+                    this.list.push({
+                        id: this.id,
+                        name: this.name,
+                        ctime: new Date()
+                    });
+                    this.id = this.name = null;
+                },
+                delitem(id){
+                    // some() 方法用于检测数组中的元素是否满足指定条件（函数提供）。
+                    // 如果有一个元素满足条件，则表达式返回true , 剩余的元素不会再执行检测。
+                    // 如果没有满足条件的元素，则返回false。
+                    // some方法不会对空数组进行检测，some不会改变原始数组
+                    // array.some(function(currentValue, index, arr), thisvalue)
+                    // currentValue必须，表示当前元素的值
+                    // index当前元素的索引值，选填
+                    // arr当前元素属于的数组对象，选填
+                    // thisvalue，可选值对象作为该执行回调时使用，传递给函数，用作this的值
+                    // 如果省略了thisvalue，this的值为undefined
+                    // this.list.some((item, i) => {
+                    //     if(item.id == id){
+                    //         // 删除从i开始的索引的数据，删除长度为1，不插入数据
+                    //         this.list.splice(i, 1)
+                    //         // some方法中如果return true，就会立即中止这个数组的后续循环
+                    //         return true
+                    //     }
+                    // })
+
+                    // 或者使用新增的findindex方法
+                    // let index  = this.list.findIndex(item => item.id === id)
+                    var index = this.list.findIndex(item => {
+                        if (item.id == id) {
+                            return true
+                        }
+                    });
+                    this.list.splice(index, 1);
+                },
+                search(kw){
+                    // 在search内部进行for循环，把所有符合搜索关键字的数据取到。
+                    // var newList = [];
+                    // this.list.forEach(element => {
+                    //    // 如果kw不匹配就会范围-1，如果kw为空字符串那么就会返回0
+                    //    if(element.name.indexOf(kw) != -1){
+                    //        newList.push(element);
+                    //    } 
+                    // });
+                    // return newList
+
+                    // 用filter这一种方法，说到的这些方法都是数组的新方法，都会对数组中的每一项进行遍历，执行相关的操作。
+                    return this.list.filter(item => {
+                        // ES6中提供了一个新方法，String.prototype.includes('要包含的字符串')，如果包含返回true，否则返回false
+                        if (item.name.includes(kw)){
+                            return item
+                        }
+                    })
+                }
+            },
+            created: {},
+            computed: {},
+        })
+
+        // 定义过滤器，过滤器的名称，回调函数，回调函数的第一个参数就是我们传递的要操作的值
+        Vue.filter('过滤器的名称', function(date_msg){
+
+        })
+    </script>
+</body>
+</html>
