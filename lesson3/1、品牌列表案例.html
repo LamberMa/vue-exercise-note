@@ -23,12 +23,18 @@
                     ID: <input type="text" class='form-control' v-model="id">
                 </label>
                 <label for="">
-                    NAME: <input type="text" class='form-control' v-model='name'>
+                    <!--自定义按键的修饰符，只有当enter按下的时候才触发
+                    .enter .tab .delete (捕获“删除”和“退格”键) .esc .space .up .down .left .right
+                    这上面是现成提供的，但是没有提供的也是设置的，因为每个按键都有对应的键盘码
+                    https://www.cnblogs.com/cnblogs-jcy/p/6409672.html
+                    @keyup.113，代表的就是F2的按键，这个完全是可以你自己定义的，当然我们也可以为这个码实现别名的
+                    -->
+                    NAME: <input type="text" class='form-control' v-model='name' @keyup.f2='additem'>
                 </label>
                 <!--在vue中使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了-->
                 <input type="button" class="btn btn-success" value='添加' @click="additem">
                 <label for="">搜索名称关键字
-                    <input type="text" class='form-control' v-model='kw'>
+                    <input type="text" class='form-control' v-model='kw' v-focus>
                 </label>
             </div>
         </div>
@@ -46,7 +52,7 @@
                 <tr v-for="item in search(kw)" :key="item.id">
                     <td>{{item.id}}</td>
                     <td>{{item.name}}</td>
-                    <td>{{item.ctime}}</td>
+                    <td>{{ item.ctime | dateFormat('') }}</td>
                     <!--为了避免刷新，要组织a标签的默认行为-->
                     <td><a href="" @click.prevent='delitem(item.id)'>删除</td>
                 </tr>
@@ -55,6 +61,55 @@
     </div>
     <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
     <script>
+
+        // 定义过滤器【使用过滤器可以常见文本的格式化，用在两个地方mustache和v-bind】，对时间进行格式化；过滤器的名称，回调函数，回调函数的第一个参数就是我们传递的要操作的值
+        // 过滤器的使用格式{{  name | filter1 }}
+        // Vue.filter('过滤器的名称', function(date_msg){ })
+        // 过滤器允许多次的调用，比如 {{  a | filter1 | filter2 | filter3 ………………}}
+        Vue.filter('dateFormat', function (date_msg, pattern="") {
+            // 如果是字符串的替换的话，可以使用replace方法进行替换，不仅如此还可以使用正则表达式。
+            // 同时这个回调函数我可以传递多个参数，因此我们可以进行自由的替换。
+            // 根据给定时间字符串返回对应的时间格式。
+            var dt = new Date(date_msg)
+            var y = dt.getFullYear()
+            var m = dt.getMonth() + 1
+            var d = dt.getDate()
+
+            if(pattern.toLowerCase() === 'yyyy-mm-dd'){
+                return `${y}-${m}-${d}`
+            }else{
+                var hh = dt.getHours()
+                var mm = dt.getMinutes()
+                var ss = dt.getSeconds()
+
+                return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+            }
+        })
+
+        // 自定义全局按键修饰符，vue2.x的按键修饰符的定义方式，vue1.x的定义方式为Vue.directive('on').keyCode.f2 = 113，但是1.x的基本不会使用了。
+        Vue.config.keyCodes.f2 = 113
+        
+        // 自定义元素的绑定：使用Vue.directive定义全局的指令v-focus
+        // 其中参数1表示指令的名称，注意，在定义的时候，指令的名称前面不需要加v-的前缀
+        // 但是：在调用的时候必须在指令前加上v-才能进行调用
+        // 参数2是一个对象，这个对象身上，有一些
+        Vue.directive('focus', {
+            // bind: 指令只调用一次，指令第一次绑定到元素的时候调用，用这个钩子函数可以定义一个在绑定时执行一次的初始化动作
+            // inserted：被绑定元素插入到DOM中的时候，会执行inserted函数，触发一次。
+            // update：所在组件的vnode更新的时候调用，可能会触发多次。但是可能发生在其孩子的node更新之前，只能的值可能发生了改变也可能没有，但是你可以通过比较更新前后的值来忽略不必要的模板更新
+            // componentUpdated：所在组件的Vnode及其孩子的Vnode全部更新的时候调用
+            // unbind：只调用一次，指令与元素解绑的时候调用
+            bind: function(el){
+                // 注意在每一个函数中，第一个参数永远是el，表示被绑定了指令的那个元素，这个el参数是一个原生的js DOM对象。
+                // 在元素刚绑定指令的时候，还没有插入到DOM中去，这个时候调用focus方法没有作用
+                // 因为一个元素只有插入DOM后才能获取焦点，因为一开始都是在内存中的DOM树里面，还没有渲染
+            },
+            inserted: function(el){
+                el.focus()
+            },
+            updated: function(el){}
+        })
+
         var app = new Vue({
             el: '#app',
             data: {
@@ -122,20 +177,38 @@
                     // 用filter这一种方法，说到的这些方法都是数组的新方法，都会对数组中的每一项进行遍历，执行相关的操作。
                     return this.list.filter(item => {
                         // ES6中提供了一个新方法，String.prototype.includes('要包含的字符串')，如果包含返回true，否则返回false
+                        // 同时调研一个方法，字符串.contains。
                         if (item.name.includes(kw)){
                             return item
                         }
                     })
                 }
             },
-            created: {},
-            computed: {},
+            // 定义的私有的多个过滤器，记住这里的filter是带s的，filter本身就是一个对象
+            filters: {
+                // 私有过滤器会优先调用内部的，然后再调用全局的，这里有一个就近原则，所以局部和全局的名称可以一致，调用的时候优先找自己内部的。
+                dateFormat: function(date_msg, pattern=""){
+                    var dt = new Date(date_msg)
+                    var y = dt.getFullYear()
+                    // padstart不足两位的可以进行填充，指定位数和填充物，对应的还有padEnd，比如6分的时候显示06而不是显示6.
+                    var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+                    var d = dt.getDate()
+
+                    if (pattern.toLowerCase() === 'yyyy-mm-dd') {
+                        return `${y}-${m}-${d}`
+                    } else {
+                        var hh = dt.getHours().toString().padStart(2, '0')
+                        var mm = dt.getMinutes().toString().padStart(2, '0')
+                        var ss = dt.getSeconds().toString().padStart(2, '0')
+                        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+                    }
+                }
+            }
         })
 
-        // 定义过滤器，过滤器的名称，回调函数，回调函数的第一个参数就是我们传递的要操作的值
-        Vue.filter('过滤器的名称', function(date_msg){
 
-        })
+
+
     </script>
 </body>
 </html>
