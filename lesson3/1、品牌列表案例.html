@@ -34,10 +34,12 @@
                 <!--在vue中使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了-->
                 <input type="button" class="btn btn-success" value='添加' @click="additem">
                 <label for="">搜索名称关键字
-                    <input type="text" class='form-control' v-model='kw' v-focus>
+                    <input type="text" class='form-control' v-model='kw' v-focus v-color="'blue'">
                 </label>
             </div>
         </div>
+
+        <div v-fontWeight='900' v-fontsize='"100px"'>table-striped</div>
 
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -102,12 +104,36 @@
             bind: function(el){
                 // 注意在每一个函数中，第一个参数永远是el，表示被绑定了指令的那个元素，这个el参数是一个原生的js DOM对象。
                 // 在元素刚绑定指令的时候，还没有插入到DOM中去，这个时候调用focus方法没有作用
-                // 因为一个元素只有插入DOM后才能获取焦点，因为一开始都是在内存中的DOM树里面，还没有渲染
+                // 因为一个元素只有插入DOM后才能获取焦点，因为一开始都是在内存中的DOM树里面，还没有渲染，所以要执行focus得在插入的时候
+                // 这里看一下虚拟DOM。bind是指的元素一加载就会调用bind，调用时机不一样，这个时候是在内存中进行调用的。
+                // 傻傻分不清的话，那就都写到inserted里面去。
             },
             inserted: function(el){
+                // 钩子函数的参数简要如下：
+                // 1、el，绑定的DOM元素对象
+                // 2、binding，一个对象，包含以下属性
+                //    - name:属性名，不包括v-前缀
+                //    - value：指令的绑定值，比如v-my-directive="1 + 1", value的值为2
+                //    - oldValue：指定绑定的前一个值，仅在update和componentUpdated钩子中可用，无论值是否改变都可以用
+                //    - expression：绑定值得字符串形式，比如v-my-direction="1+1",expression的值是1+1
+                //    - arg：传给指令的参数，比如v-my-directive:foo，arg的值就是“foo”
+                //    - modifiers：一个包含修饰符的对象，比如v-my-directive.foo.bar，修饰符对象modifiers的值是{foo：true，bar：true}
+                // 3、vnode：Vue编译生成的虚拟节点
+                // 4、oldVnode：上一个虚拟节点，仅在update和componentUpdated钩子中可用。
                 el.focus()
             },
             updated: function(el){}
+        })
+
+        // 自定义一个设置字体颜色的指令
+        Vue.directive('color', {
+            bind: function(el, binding){
+                // 为什么这里可以写到bind里面，因为不需要关心DOM有没有插入，因为只要样式解析了就可以，这个并不是一个JS的行为。
+                // 所以样式的内容可以放到bind里，和JS行为有关的操作都在inserted里操作，防止操作不生效。
+                // 注意时间绑定的时候v-color:"'blue'"，双引号里面有一个单引号，这样就是指的字符串，否则会找一个叫blue的变量。
+                // binding这里就是个形式参数，你写啥都无所谓，所以你下面对应上就可以了。
+                el.style.color = binding.value
+            },
         })
 
         var app = new Vue({
@@ -202,6 +228,18 @@
                         var ss = dt.getSeconds().toString().padStart(2, '0')
                         return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
                     }
+                }
+            },
+            directives: {
+                // 自定义私有指令
+                'fontweight': {
+                    bind: function(el, binding){
+                        el.style.fontWeight = binding.value;
+                    }
+                },
+                'fontsize': function(el, binding){
+                    // 这个function等同于把代码写到bind和update中去。注意这里的大小写，是fontSize，不是fontsize，用户传递的时候如果带px的话要带引号，比如"'50px'"，或者直接写数字就行。
+                    el.style.fontSize = parseInt(binding.value) + 'px'
                 }
             }
         })
