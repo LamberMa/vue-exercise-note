@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+</head>
+<body>
+    <!--
+        除了vue-resource外，还可以使用axios的第三方包实现数据的请求：
+        测试数据URL：
+        get:http://vue.studyit.io/api/getlunbo
+        post:http://vue.studyit.io/api/post
+        jsonp:http://vue.studyit.io/api/jsonp
+    -->
+    <div id='app'>
+        <input type="button" @click='getinfo' value='get请求'>
+        <input type="button" @click='postinfo' value='post请求'>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <!--在vue的包后面导入vue-resource，因为vue-resource依赖于vue，vue-resource在vue实例对象的基础上挂载了一个"this.$http"属性-->
+    <!--https://github.com/pagekit/vue-resource-->
+    <script src='https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {},
+            methods: {
+                getinfo(){
+                    // 发起get请求
+                    this.$http.get('http://127.0.0.1:8888/config/').then(
+                        function(result) {
+                            // 成功的回调，这个是必须要传递的，返回的result中比较重要的，status，状态码，statusText，状态信息，url，访问的url地址。
+                            // data，body，data和body都可以用，推荐使用body
+                            console.log(result)
+                        },
+                        response => {
+                            // 失败的回调，这个是可选的
+
+                        }
+                    );
+                },
+                postinfo(){
+                    this.$http.post('http://127.0.0.1:8888/config/', {}, {
+                        // 通过post方法的第三个参数，设置提交的内容类型为普通的表单格式。
+                        emulateJSON: true,
+                    }).then(
+                        result=>{
+                            console.log(result.body)
+                        },
+                        response=>{
+
+                        }
+                    )
+                }
+            },
+        })
+    </script>
+</body>
+</html>
