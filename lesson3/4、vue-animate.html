@@ -5,19 +5,37 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta http-equiv='X-UA-Compatible' content='ie=edge'>
     <title>Document</title>
+    <!--2、自定义两组样式，来控制transition内部的元素实现动画-->
+    <style>
+        /* v-enter是进入之前，元素的起始状态，此时还没有开始进入 */
+        /* v-leave-to是动画离开之后，离开的终止状态，此时元素动画已经结束了。*/
+        .v-enter,.v-leave-to{
+            opacity: 0;
+        }
+        /* 入场动画的时间段，离场动画时间段 */
+        .v-enter-active,.v-leave-active{
+            transition: all 0.4s ease;
+        }
+    </style>
 </head>
 <body>
     <div id='app'>
-
+        <input type="button" value='togg;e' @click="flag=!flag">
+        <!--点击按钮让h3显示，再点击让隐藏。-->
+        <h3 v-if="flag">This is a h3</h3>
+        <!--1、使用transition元素把需要被动画控制的元素包裹起来，transition元素是官方提供的-->
+        <transition>
+            <h3 v-if="flag">这是一个带动画的h3标签</h3>
+        </transition>
     </div>
     <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
     <script>
         var app = new Vue({
             el: '#app',
-            data: {},
+            data: {
+                flag: false,
+            },
             methods: {},
-            created: {},
-            computed: {},
         })
     </script>
 </body>

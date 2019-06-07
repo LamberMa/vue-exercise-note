@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang='en'>
+
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta http-equiv='X-UA-Compatible' content='ie=edge'>
     <title>Document</title>
 </head>
+
 <body>
     <div id='app'>
         <input type="text" v-model='n1'>
@@ -30,8 +32,8 @@
                 opt: '+'
             },
             methods: {
-                getresult(){
-                    switch(this.opt){
+                getresult() {
+                    switch (this.opt) {
                         case "+":
                             this.result = parseInt(this.n1) + parseInt(this.n2);
                             break;
@@ -43,11 +45,12 @@
                             break;
                         case "/":
                             this.result = parseInt(this.n1) / parseInt(this.n2);
-                            break; 
+                            break;
                     }
                 }
             },
         })
     </script>
 </body>
+
 </html>
