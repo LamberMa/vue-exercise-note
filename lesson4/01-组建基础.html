@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .main{
+            width: 100%;
+        }
+        .head{
+            width: 100%;
+            height: 70px;
+            background-color: green;
+            line-height: 70px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .wrap{
+            width: 100%;
+            height: 1200px;
+        }
+        .wrap .aside{
+            width: 30%;
+            height: 1200px;
+            background-color: red;
+            float: left;
+        }
+        .wrap .content{
+            width: 70%;
+            height: 1200px;
+            float: right;
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div id='app'>
+
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js'></script>
+    <script>
+        /*  先声子组件，挂载子组件，使用子组件
+            1、头部组件
+            2、侧边栏
+            3、内容组件
+            4、脚本组件       
+        */
+
+        /*
+            Prop单向数据流，在组件中，顶级组件，下面的每一个子组件，或者更深一层的子组件都有可能需要向后端请求数据，这样可能会对后端服务器造成比较大的压力。
+            可以在顶级组件，拿到后端数据后，通过单向数据流向自己组件去传递数据，在vue中通过prop这个字段来进行传递数据。
+            Prop 是你可以在组件上注册的一些自定义特性。当一个值传递给一个 prop 特性的时候，它就变成了那个组件实例的一个属性。
+            一个组件默认可以拥有任意数量的 prop，任何值都可以传递给任何 prop。你会发现我们能够在组件实例中访问这个值，就像访问 data 中的值一样。
+            prop:['自定义属性1','自定义属性2']
+            需要在父组件中导入的子组件内部，绑定自定义属性<Vheader :title='父组件中data声明的数据属性'>
+        */
+
+        var Vheader = {
+            template: '<header class="head">我是头部</header>',
+        };
+        var Vaside = {
+            template: '<div class="aside">我是侧边栏</div>'
+        };
+        var Vcontent = {
+            template: `<div class="content">
+                            <ul>
+                                <li v-for='post in posts' :key='post.id'>
+                                    <h2>{{post.name}}</h2>
+                                </li>
+                            </ul>
+                      </div>`,
+            props: ['posts']
+        }
+
+        // 1、声明入口文件
+        var Vmain = {
+            template: `<div class="main">
+                            <a href="javascript:void(0)">{{title}}</a>
+                            <Vheader />
+                            <div class="wrap">
+                                <Vaside />
+                                <Vcontent :posts="appPosts" />
+                            </div>
+                        </div>`,
+            // 在ES6中，如果对象的key=value，那么可以简写为一个，下面这个表现形式等价于Vheader: Vheader
+            components: {
+                Vheader,
+                Vaside,
+                Vcontent,
+            },
+            props: ['title', 'appPosts'],
+        }
+
+        var app = new Vue({
+            el: '#app',
+            // 3、使用子组件，这里也可以使用单标签
+            template: "<Vmain :title='text' :appPosts='posts'/>",
+            data: {
+                text: 'This is a test title',
+                posts: [
+                    {id: 1, name: 'lamber'},
+                    {id: 2, name: 'maxiaoyu'},
+                    {id: 3, name: 'qimaosen'}
+                ]
+            },
+            methods: {},
+            components: {
+                // 2、挂载子组件，key表示组件名，value表示组件对象
+                Vmain: Vmain,
+            }
+        })
+    </script>
+</body>
+</html>

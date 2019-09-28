@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app'></div>
+    <script src='./node_modules/vue/dist/vue.js' type='text/javascript'></script>
+    <script src='./node_modules/vue-router/dist/vue-router.js' type='text/javascript'></script>
+    <script>
+        /*
+            引入以后会在全局return一个VueRouter对象，vue-router还提供了两个全局的组件，一个是router-link，一个是router-view
+        */
+        // 1、让vue使用该vuerouter创建
+        Vue.use(VueRouter);
+
+        var Login = {
+            template: `
+            <div>登录页面</div>
+            `
+        };
+        var Register = {
+            template: `
+            <div>注册页面</div>
+            `
+        }; 
+        // 2、创建一个路由对象
+        var router = new VueRouter({
+            // 3、配置路由对象，这个routers是是一个数组，保存所有的路由
+            routers: [
+                {
+                    path: '/login',
+                    component: Login
+                },
+                {
+                    path: '/register',
+                    component: Register
+                },
+            ]
+        });
+
+        var App = {
+            // router-link默认会被渲染成a标签，to属性会默认被渲染成href
+            // router-view是所有路由组件的出口，当点击了对应的router-link后，对应的组件会被渲染到router-view中。
+            template: `
+            <div>
+                <router-link to="/login">登录</router-link>
+                <router-link to="/register">注册</router-link>
+                <!--路由组件的出口都会被渲染到这里-->
+                <router-view></router-view>
+            </div>`
+        }
+
+        new Vue({
+            el: '#app',
+            components: {
+                App: App,
+            },
+            router,
+            template: '<App />',
+        })
+    </script>
+</body>
+</html>

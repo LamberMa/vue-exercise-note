@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app'>
+
+    </div>
+    <script src='../node_modules/vue/dist/vue.js'></script>
+    <script src='../node_modules/axios/dist/axios.js'></script>
+    <script>
+        var App = {
+            template: `
+            <div>
+                <button @click='sendAjax'>发Get</button>
+                <h3>{{msg}}</h3>
+                <button @click='sendAjaxbyPost'>发Post</button>
+            </div>`,
+            data(){
+                return {
+                    msg: '',
+                }
+            },
+            methods: {
+                sendAjax() {
+                    axios.get('http://127.0.0.1:8888/axios/')
+                        .then((res) => {
+                            console.log('成功了', res);
+                            console.log(res.data, typeof res.data)
+                            this.msg = res.data
+                        })
+                        .catch(err => {
+                            console.log('失败了', err);
+                            console.log(res.data, typeof res.data)
+                        })
+                },
+                sendAjaxbyPost(){
+                    var params = new URLSearchParams();
+                    params.append('name', 'alex')
+                    axios.post('http://127.0.0.1:8888/axios/', params).then(function(res){
+                        console.log(res)
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+                }
+            },
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {},
+            components: {
+                App
+            },
+            template: '<App />'
+        })
+    </script>
+</body>
+</html>
